@@ -1,0 +1,221 @@
+﻿@page
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using Data.Models;
+@model OfficeTechRepairSystem.Pages.ServicesModel
+@{
+    string modalTitle = !Model.IsEditMode ? "Создать новую услугу" : "Редактировать услугу";
+}
+
+<div class="service-header">
+    <div class="container">
+
+        <div class="row">
+            <div class="col d-flex">
+                <h5 class="pt-5 fw-bold">Услуги</h5>
+
+                <i class="fa-solid m-3 pt-5 fa-plus fa-xl" style="color: #000000;" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
+            </div>
+
+            <form method="post" asp-page-handler="GetServicesBySearch" class="input-group col pt-5" style="height: 30px">
+                <input asp-for="@Model.Query" class="form-control" placeholder="Введите название услуги" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Поиск</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+
+    <div class="row">
+        <div class="col-3" style="margin-right:130px">
+            @foreach (Category category in Model.Categories)
+            {
+                <form method="post" asp-page-handler="GetServicesByCategory">
+                    <button type="submit" class="category" onclick="setActive(this)">
+                        <p>@category.Title</p>
+                    </button>
+
+                    <input hidden asp-for="@Model.CategoryId" value="@category.Id"/>
+                </form>
+            }
+        </div>
+
+        <div class="col">
+
+            @foreach(Service service in Model.Services)
+            {
+                <div class="card mb-3">
+                    <div class="card-crud">
+                        <i class="fa-solid fa-trash fa-xl" style="color: #000000;" data-bs-toggle="modal" data-bs-target="#exampleModal1" data-id="@service.Id"></i>
+                        <i class="fa-solid fa-pencil fa-xl" style="color: #000000;" 
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal"
+                            data-id="@service.Id"
+                            data-title="@service.Title"
+                            data-desc="@service.Description"
+                            data-shortdesc="@service.ShortDesc"
+                            data-price="@service.Price"
+                            data-category="@service.CategoryId"></i>
+                    </div>
+                    <img src="~/lib/img/64d90d1d8c91e957a4f18dfe2710616e.jpg" style="height: 300px" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">@service.Title</h5>
+                        <p class="card-text">@service.ShortDesc</p>
+                        <p class="card-text"><small class="text-muted">@service.Price руб</small></p>
+                    </div>
+                </div>
+            }
+        </div> 
+    </div>
+</div>
+
+
+@* Модальное окно для добавление услуги *@
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">@modalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form method="post" asp-page-handler="UpsertService" class="modal-body">
+
+                <input hidden asp-for="@Model.Service.Id" class="input-id"/>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Наименование</span>
+                    <input asp-for="@Model.Service.Title" type="text" class="form-control input-title" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                    <span class="text-danger" asp-validation-for="@Model.Service.Title"></span>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Короткое описание</span>
+                    <input asp-for="@Model.Service.ShortDesc" type=" text" class="form-control input-ShortDesc" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                    <span class="text-danger" asp-validation-for="@Model.Service.ShortDesc"></span>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Описание</span>
+                    <input asp-for="@Model.Service.Description" type="text" class="input-Desc" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                    <span class="text-danger" asp-validation-for="@Model.Service.Description"></span>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Цена</span>
+                    <input asp-for="@Model.Service.Price" type="text" class="form-control input-Price" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                    <span class="text-danger" asp-validation-for="@Model.Service.Price"></span>
+                </div>
+
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputGroupSelect01">Категория</label>
+                    <select asp-for="@Model.Service.CategoryId" class="form-select select-cat" id="inputGroupSelect01">
+                        <option selected>Выберите категорию</option>
+                        @foreach(Category category in Model.Categories)
+                        {
+                            <option value="@category.Id">@category.Title</option>
+                        }
+                    </select>
+                    <span class="text-danger" asp-validation-for="@Model.Service.CategoryId"></span>
+                </div>
+
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputGroupFile01">Изображение</label>
+                    <input type="file" class="form-control" id="inputGroupFile01">
+                </div>
+
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Модальное окно для удаления услуги *@
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-page-handler="DeleteService" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> <!-- Заголовок модального окна -->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <input hidden asp-for="@Model.ServiceId" class="input-id" />
+            </div>
+            <div class="modal-body">
+                <p id="modal-body-content"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="submit" class="btn btn-danger">Удалить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function setActive(element) {                
+            var categories = document.getElementsByClassName('category');
+            for (var i = 0; i < categories.length; i++) {
+                categories[i].classList.remove('active');
+            }
+            element.classList.add('active');
+        }
+
+    </script>
+
+    <script>
+        // Добавление обработчика события для показа модального окна
+        var exampleModal = document.getElementById('exampleModal1');
+        exampleModal.addEventListener('show.bs.modal', function (event) {
+            // Кнопка, которая вызвала модальное окно
+            var button = event.relatedTarget;
+            // Извлечение информации из атрибутов data-*
+            var id = button.getAttribute('data-id');
+
+            // Обновление содержимого модального окна
+            var modalTitle = exampleModal.querySelector('.modal-title');
+            var modalBodyContent = exampleModal.querySelector('#modal-body-content');
+            var modalInput = exampleModal.querySelector('.input-id');
+
+            modalTitle.textContent = 'Вы действительно хотите удалить услугу с ID:"' + id + '"?';
+            modalInput.value = id;
+            modalBodyContent.textContent = 'Отменить текущие действие будет нельзя!';
+        });
+    </script>
+
+    <script>
+        // Добавление обработчика события для показа модального окна
+        var exampleModalEx = document.getElementById('exampleModal');
+        exampleModalEx.addEventListener('show.bs.modal', function (event) {
+            // Кнопка, которая вызвала модальное окно
+            var button = event.relatedTarget;
+            // Извлечение информации из атрибутов data-*
+            var id = button.getAttribute('data-id');
+            var title = button.getAttribute('data-title');
+            var desc = button.getAttribute('data-desc');
+            var shortDesc = button.getAttribute('data-shortdesc');
+            var price = button.getAttribute('data-price');
+            var category = button.getAttribute('data-category');
+
+            // Обновление содержимого модального окна
+            var Id = exampleModalEx.querySelector('.input-id');
+            var Title = exampleModalEx.querySelector('.input-title');
+            var ShortDesc = exampleModalEx.querySelector('.input-ShortDesc');
+            var Desc = exampleModalEx.querySelector('.input-Desc');
+            var Price = exampleModalEx.querySelector('.input-Price');
+            var Category = exampleModalEx.querySelector('.select-cat);
+
+            Id.value = id;
+            Title.value = title;
+            Desc.value = desc;
+            Price.value = price;
+            Category.value = category;
+            ShortDesc.value = shortDesc;
+        });
+    </script>
+}

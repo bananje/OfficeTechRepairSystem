@@ -1,0 +1,99 @@
+﻿@page
+@model OfficeTechRepairSystem.Pages.СontactsModel
+@{
+}
+
+<div>
+    <div class="d-block">
+        <script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A536e093d59a7c88bfc81804dd43b3afddeba680a319785aa73521259d5c2e3c6&amp;height=600&amp;lang=ru_RU&amp;scroll=true" style="width: 100%"></script>
+    </div>
+
+    <div class="contacts container d-md-block bg-white rounded">
+        <div class="row">
+            <div class="col">
+                <i class="fa-brands fa-telegram fa-2xl contact-icon" style="color: #000000;"></i>
+                <div class="contact-desc">
+                    <h4>Мы в телеграме</h4>
+                    <p>remontnik</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <i class="fa-brands fa-vk fa-2xl contact-icon" style="color: #000000;"></i>
+                <div class="contact-desc">
+                    <h4>Мы в VK</h4>
+                    <p>remontnik</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <i class="fa-solid fa-envelope  fa-2xl contact-icon" style="color: #000000;"></i>
+                <div class="contact-desc">
+                    <h4>Наш email</h4>
+                    <p>remontnik</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <i class="fa-solid fa-clock fa-2xl contact-icon" style="color: #000000;"></i>
+                <div class="contact-desc">
+                    <h4>Часы работы</h4>
+                    <p>remontnik</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" asp-page-handler="SendRequest" class="callback-block container pb-5">
+
+        <div class="pb-5">
+            <p>В наших силах «воскресить» офисную технику любой марки и модели, вне зависимости от сложности ремонта. </p>
+            <p>Если у Вас много техники, или её поломка мешает зарабатывать деньги - с радостью заключим договор на регламентное сервисное обслуживание.</p>
+        </div>
+
+        <h3 class="pb-4">Обратная связь</h3>
+
+        <div class="row">
+            <div class="input-group col">
+                <span class="input-group-text">Сообщение</span>
+                <textarea asp-for="@Model.Request.Message" class="form-control" aria-label="With textarea"></textarea>
+                <span class="text-danger" asp-validation-for="@Model.Request.Message"></span>
+            </div>
+
+            <div class="col">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"></span>
+                    <input asp-for="@Model.Request.UserName" class="form-control" placeholder="Ваше имя" aria-label="Username" aria-describedby="basic-addon1">
+                    <span class="text-danger" asp-validation-for="@Model.Request.UserName"></span>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"></span>
+                    <input asp-for="@Model.Request.Phone" class="form-control" placeholder="Телефон" aria-label="Username" aria-describedby="basic-addon1">
+                    <span class="text-danger" asp-validation-for="@Model.Request.Phone"></span>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"></span>
+                    <input asp-for="@Model.Request.Email" type="text" class="form-control" placeholder="Email" aria-label="Username" aria-describedby="basic-addon1">
+                    <span class="text-danger" asp-validation-for="@Model.Request.Email"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-check mt-3">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+                Согласие на обработку персональных данных
+            </label>
+        </div>
+
+        <div class="d-flex mt-3">
+            <button type="submit" class="btn btn-primary m-1" style="width: 120px">Отправить</button>
+            <button type="button" class="btn btn-primary m-1" style="width: 120px">Посмотреть заявки</button>
+        </div>
+    </form>
+
+</div>
+
+

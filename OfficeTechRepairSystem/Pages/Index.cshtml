@@ -1,0 +1,147 @@
+﻿@page
+@model IndexModel
+@{
+   
+}
+
+<div id="carouselExampleIndicators" class="carousel slide mb-5 mt-0" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="~/lib/img/komp-vnutri.jpg" style="height: 700px" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-md-block">
+                <h1>Ремонт и техническое обслуживание</h1>
+                <h4>Ремонт компьютеров, копиров, ноутбуков, факсов.</h4>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="~/lib/img/remont-kompyuternoy-tehniki.jpg" style="height: 700px" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-md-block">
+                <h1>Инсталляция и настройка</h1>
+                <h4>Установка и настройка офисного оборудования</h4>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="~/lib/img/RIAN_6253596.HR_.ru 5.jpg" style="height: 700px" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-md-block">
+                <h1>Обслуживание и профилактика</h1>
+                <h4>Профилактическое обслуживание для предотвращения поломок</h4>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<div class="container mt-5 pb-5">
+
+    <h2 class="mb-5" style="font-family:'Cascadia Mono'">Немного о нас</h2>
+
+    <div class="row mb-5">
+        <div class="col-md">
+            <p style="font-family:Verdana">
+                ООО "Ремонтер" — это надежный партнер в мире офисных решений. Мы предоставляем полный спектр услуг по обслуживанию, ремонту и технической поддержке офисного оборудования, обеспечивая бесперебойную работу вашего бизнеса. Наши специалисты обладают высоким уровнем профессионализма и многолетним опытом, что позволяет нам оперативно и качественно решать любые технические задачи.
+
+                Наши услуги включают ремонт и профилактическое обслуживание принтеров, компьютеров, сканеров и другой офисной техники, а также инсталляцию и настройку нового оборудования. Мы предлагаем арендные и лизинговые программы, что позволяет нашим клиентам гибко управлять своим офисным парком.
+            </p>
+        </div>
+        <div class="col-md">
+            <img src="~/lib/img/64d90d1d8c91e957a4f18dfe2710616e.jpg" style="height: 400px; width: 500px" alt="...">
+        </div>
+    </div>
+
+    <h2 class="mb-5 mt-5" style="font-family:'Cascadia Mono'">Ремонт МФУ и принтеров</h2>
+
+    <div class="row mb-5">
+        <div class="col-md">
+            <p style="font-family:Verdana">
+                Наши специалисты обладают достаточной квалификацией, чтобы подключить, обслужить и отремонтировать любой вид оргтехники, включая периферийное оборудование.
+            </p>
+            <p style="font-family:Verdana">
+                Спектр оказываемых нашей компанией услуг удовлетворит любого клиента. Заправка картриджей, ремонт МФУ и принтеров, калибровка и очистка печатных устройств – это только часть оказываемых нами услуг.
+            </p>
+            <p style="font-family:Verdana">
+                Мы подключаем офисную технику, обеспечивая ее безупречное функционирование с соблюдением всех необходимых правил безопасности. Вашим сотрудникам, эксплуатирующим технику, не угрожает случайное поражение током или выход самой техники из строя из-за скачков напряжения. Помните, пытаюсь самостоятельно решить проблему с неработающей оргтехникой, вы рискуете вывести ее из строя непрофессиональными действиями и навредить самому себе.
+            </p>
+            <p style="font-family:Verdana">
+                Ознакомиться со всем их списком или поинтересоваться о конкретной услуге можно, позвонив по телефону. Мы уверены в высоком качестве своей работы, поэтому предоставляем послеремонтную гарантию.
+            </p>
+            <p style="font-family:Verdana">
+                Все работы выполняются нашими специалистами с высоким качеством и в кратчайшие сроки. Единственное, что от вас требуется – оформить заявку, после чего к вам в самое короткое время прибудут наши мастера.
+            </p>
+
+        </div>
+    </div>
+
+    <h2 class="mb-5" style="font-family:'Cascadia Mono'">Популярные услуги</h2>
+
+    <div id="carouselExampleIndicators" class="carousel slide pb-5" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active bg-black" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" class="bg-black" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" class="bg-black" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="row">
+                    <div class="card col" style="width: 18rem;">
+                        <img src="..." class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                    <div class="card col" style="width: 18rem;">
+                        <img src="..." class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                    <div class="card col" style="width: 18rem;">
+                        <img src="..." class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                    <div class="card col" style="width: 18rem;">
+                        <img src="..." class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>             
+            </div>
+            <div class="carousel-item">
+                <div class="card" style="width: 18rem;">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <img src="~/lib/img/priority-headline-background.png" style="height: 600px" class="w-100" alt="...">
+        <div class="carousel-caption" style="margin-bottom: 200px">
+            <h1>Свяжитесь с нами!</h1>
+            <button type="button" class="btn btn-secondary btn-lg">Заказать звонок</button>
+        </div>
+    </div>
+
+</div>
