@@ -14,7 +14,7 @@
                 <i class="fa-brands fa-telegram fa-2xl contact-icon" style="color: #000000;"></i>
                 <div class="contact-desc">
                     <h4>Мы в телеграме</h4>
-                    <p>remontnik</p>
+                    <p>tg:remontnik</p>
                 </div>
             </div>
 
@@ -22,7 +22,7 @@
                 <i class="fa-brands fa-vk fa-2xl contact-icon" style="color: #000000;"></i>
                 <div class="contact-desc">
                     <h4>Мы в VK</h4>
-                    <p>remontnik</p>
+                    <p>remontnikvk</p>
                 </div>
             </div>
 
@@ -30,7 +30,7 @@
                 <i class="fa-solid fa-envelope  fa-2xl contact-icon" style="color: #000000;"></i>
                 <div class="contact-desc">
                     <h4>Наш email</h4>
-                    <p>remontnik</p>
+                    <p>remontnikmail.ru</p>
                 </div>
             </div>
 
@@ -38,13 +38,13 @@
                 <i class="fa-solid fa-clock fa-2xl contact-icon" style="color: #000000;"></i>
                 <div class="contact-desc">
                     <h4>Часы работы</h4>
-                    <p>remontnik</p>
+                    <p>6:00 - 20:00</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <form method="post" asp-page-handler="SendRequest" class="callback-block container pb-5">
+    <form method="post" id="myForm" asp-page-handler="SendRequest" class="callback-block container pb-5">
 
         <div class="pb-5">
             <p>В наших силах «воскресить» офисную технику любой марки и модели, вне зависимости от сложности ремонта. </p>
@@ -52,6 +52,9 @@
         </div>
 
         <h3 class="pb-4">Обратная связь</h3>
+
+
+        <div asp-validation-summary="ModelOnly"></div>
 
         <div class="row">
             <div class="input-group col">
@@ -90,8 +93,8 @@
 
         <div class="d-flex mt-3">
             <button type="submit" class="btn btn-primary m-1" style="width: 120px">Отправить</button>
-            <button type="button" class="btn btn-primary m-1" style="width: 120px">Посмотреть заявки</button>
         </div>
+
     </form>
 
 </div>

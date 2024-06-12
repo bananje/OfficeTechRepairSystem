@@ -71,7 +71,10 @@ namespace OfficeTechRepairSystem.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Path = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    FileData = table.Column<byte[]>(type: "bytea", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    FileContentType = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -212,7 +215,8 @@ namespace OfficeTechRepairSystem.Migrations
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
                     IsPopular = table.Column<bool>(type: "boolean", nullable: true),
                     ImageUrl = table.Column<string>(type: "text", nullable: true),
-                    CategoryId = table.Column<int>(type: "integer", nullable: false)
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
+                    ImageId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -221,6 +225,12 @@ namespace OfficeTechRepairSystem.Migrations
                         name: "FK_Services_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Services_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -266,6 +276,11 @@ namespace OfficeTechRepairSystem.Migrations
                 name: "IX_Services_CategoryId",
                 table: "Services",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Services_ImageId",
+                table: "Services",
+                column: "ImageId");
 
             var hasher = new PasswordHasher<IdentityUser>();
 
@@ -314,9 +329,9 @@ namespace OfficeTechRepairSystem.Migrations
             columns: new[] { "Id", "Title" },
             values: new object[,]
             {
-                { 1, "Category 1" },
-                { 2, "Category 2" },
-                { 3, "Category 3" }
+                { 1, "Ремонт компьютерной техники и принтеров" },
+                { 2, "Обслуживание офисной техники и обновление" },
+                { 3, "Доработка текущего оборудования и замена запчастей" }
             });
 
             migrationBuilder.InsertData(
@@ -334,7 +349,7 @@ namespace OfficeTechRepairSystem.Migrations
                 { 8, "Service 8", "Short description for service 8", "Full description for service 8", 800.00m, false, "image8.jpg", 3},
                 { 9, "Service 9", "Short description for service 9", "Full description for service 9", 900.00m, true, "image9.jpg", 3 },
                 { 10, "Service 10", "Short description for service 10", "Full description for service 10", 1000.00m, false, "image10.jpg", 3 }
-            });        
+            });
 
             migrationBuilder.InsertData(
            table: "Requests",
@@ -383,9 +398,6 @@ namespace OfficeTechRepairSystem.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Images");
-
-            migrationBuilder.DropTable(
                 name: "Requests");
 
             migrationBuilder.DropTable(
@@ -398,39 +410,10 @@ namespace OfficeTechRepairSystem.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Categories");         
+                name: "Categories");
 
-            for (int i = 1; i <= 10; i++)
-            {
-                migrationBuilder.DeleteData(
-                    table: "Services",
-                    keyColumn: "Id",
-                    keyValue: i);
-            }
-
-            migrationBuilder.DeleteData(
-           table: "Categories",
-           keyColumn: "Id",
-           keyValue: 1);
-
-            migrationBuilder.DeleteData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 2);
-
-            migrationBuilder.DeleteData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 3);
-
-            for (int i = 1; i <= 20; i++)
-            {
-                migrationBuilder.DeleteData(
-                    table: "Requests",
-                    keyColumn: "Id",
-                    keyValue: i);
-            }
+            migrationBuilder.DropTable(
+                name: "Images");
         }
     }
 }
-

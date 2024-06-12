@@ -1,30 +1,26 @@
 version: '3.8'
 
-networks:
-    app-network:
-  
 volumes:
   postgres_data:
 
+networks:
+  app-network:
+
 services:
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: SpeechDiscovery.Notification.API/Dockerfile
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #     kafka:
-  #       condition: service_started
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ConnectionStrings__NotificationDb=Username=postgres;Password=postgres;Host=db;Port=5432;Database=NotificationSystem;Pooling=true
-  #     - KafkaConsumerConfig__BootstrapServers:kafka:29092
-  #     - RedisConfig__ConnectionString=redis:6379
-  #   networks:
-  #     - app-network
+  app:
+    build:
+      context: .
+      dockerfile: OfficeTechRepairSystem/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__OfficeTechRepairSystemDb=Username=postgres;Password=postgres;Host=db;Port=5432;Database=OfficeTechRepairSystemDb;Pooling=true
+    networks:
+      - app-network
 
   db:
     image: postgres:16.1-alpine
@@ -35,11 +31,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres && psql -U postgres -d NotificationSystem -c 'SELECT 1'" ]
+      test: ["CMD-SHELL", "pg_isready -U postgres && psql -U postgres -d OfficeTechRepairSystemDb -c 'SELECT 1'"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
+      start_period: 10s  
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:

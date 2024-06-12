@@ -1,23 +1,43 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using OfficeTechRepairSystem.Data;
 using OfficeTechRepairSystem.Data.Models;
-using OfficeTechRepairSystem.Data.Repositories;
 
 namespace OfficeTechRepairSystem.Pages
 {
     public class СontactsModel(
-        IRepository<Request> requestRepositor) : PageModel
+        IDbContextFactory<ApplicationDbContext> contextFactory) : PageModel
     {
         public Request Request { get; set; }
 
         public void OnGet()
         {
+
         }
 
-        public async Task OnPostSendRequest()
+        public async Task OnPostSendRequest(Request Request)
         {
-            if (Request is not null)
+            using var context = contextFactory.CreateDbContext();
+            
+            if (ModelState.IsValid)
             {
-                await requestRepositor.AddAsync(Request);
+                if (Request is not null)
+                {
+                    try
+                    {
+                        await context.Requests.AddAsync(Request);
+
+                        await context.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        //ModelState.AddModelError(string.Empty, "Произошла ошибка при сохранении запроса: " + ex.Message);
+                    }
+                }
+            }
+            else
+            {
+                //ModelState.AddModelError(string.Empty, "Запрос не может быть пустым.");
             }
         }
     }

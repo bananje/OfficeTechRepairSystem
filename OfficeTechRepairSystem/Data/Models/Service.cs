@@ -27,6 +27,10 @@ namespace OfficeTechRepairSystem.Data.Models
         [Required(ErrorMessage = "Категория обязательное поле")]
         public int CategoryId { get; set; }
 
+        public int? ImageId { get; set; }
+
         public Category Category { get; set; }
+
+        public Image Image { get; set; }
     }
 }

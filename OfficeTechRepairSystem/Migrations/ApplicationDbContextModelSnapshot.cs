@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OfficeTechRepairSystem.Data;
@@ -12,11 +11,9 @@ using OfficeTechRepairSystem.Data;
 namespace OfficeTechRepairSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240611181727_Initial")]
-    partial class Initial
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -250,7 +247,19 @@ namespace OfficeTechRepairSystem.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Path")
+                    b.Property<string>("FileContentType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("FileData")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -304,6 +313,9 @@ namespace OfficeTechRepairSystem.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("ImageId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
 
@@ -326,6 +338,8 @@ namespace OfficeTechRepairSystem.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("ImageId");
 
                     b.ToTable("Services");
                 });
@@ -389,7 +403,15 @@ namespace OfficeTechRepairSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("OfficeTechRepairSystem.Data.Models.Image", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("Image");
                 });
 #pragma warning restore 612, 618
         }

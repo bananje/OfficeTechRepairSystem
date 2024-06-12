@@ -1,15 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using OfficeTechRepairSystem.Data;
 using OfficeTechRepairSystem.Data.Models;
-using OfficeTechRepairSystem.Data.Repositories;
+using System.Security.Claims;
 
 namespace OfficeTechRepairSystem.Pages
 {
     public class ServicesModel(
-         IRepository<Service> serviceRepository,
-         IRepository<Category> categoryRepository,
-         ApplicationDbContext context) : PageModel
+         IDbContextFactory<ApplicationDbContext> contextFactory,
+         IHttpContextAccessor httpContextAccessor,
+         IWebHostEnvironment webHostEnvironment) : PageModel
     {
 
         public bool IsEditMode = false;
@@ -29,17 +30,56 @@ namespace OfficeTechRepairSystem.Pages
 
         public async Task OnGetAsync()
         {
-            Categories = await categoryRepository.GetAllAsync();
-            Services = await serviceRepository.GetAllAsync();
+            using var context = contextFactory.CreateDbContext();
+
+            Categories = await context.Categories.ToListAsync();
+            Services = await context.Services.Include(u => u.Image).ToListAsync();
+
+            foreach (var item in Services)
+            {
+                if (item.ImageId is not null)
+                {
+                    await OnGetDownloadFileAsync(item.ImageId);
+                }
+            }
+        }
+
+        public async Task OnGetDownloadFileAsync(int? requestId)
+        {
+            using var context = contextFactory.CreateDbContext();
+            var request = await context.Images.FindAsync(requestId);
+
+            if (request == null || request.FileData == null)
+            {
+                return;
+            }
+
+            var uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "lib/img");
+
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var filePath = Path.Combine(uploadsFolder, request.FileName);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                await System.IO.File.WriteAllBytesAsync(filePath, request.FileData);
+            }
         }
 
         public async Task OnPostDeleteService(int serviceId)
         {
-            var service = await serviceRepository.GetByIdAsync(serviceId);
+            using var context = contextFactory.CreateDbContext();
+
+            var service = await context.Services.Where(u => u.Id == serviceId).FirstOrDefaultAsync();
 
             if (service is not null)
             {
-                serviceRepository.Remove(service);
+                context.Services.Remove(service); 
+
+                await context.SaveChangesAsync();
             }
 
             await OnGetAsync();
@@ -47,15 +87,26 @@ namespace OfficeTechRepairSystem.Pages
 
         public async Task OnPostGetServicesByCategory(int categoryId)
         {
-            Services = new List<Service>();
+            using var context = contextFactory.CreateDbContext();
 
-            Services = await serviceRepository.FindAsync(u => u.CategoryId == categoryId);
-            Categories = await categoryRepository.GetAllAsync();
+            Services = await context.Services.Where(u => u.CategoryId == categoryId).Include(u => u.Image).ToListAsync();
+
+            foreach (var item in Services)
+            {
+                if (item.ImageId is not null)
+                {
+                    await OnGetDownloadFileAsync(item.ImageId);
+                }
+            }
+
+            Categories = await context.Categories.ToListAsync(); 
         }
 
         public async Task OnPostGetServicesBySearch(string query)
         {
-            var exactMatches = context.Services.Where(s => s.Title.StartsWith(query)).ToList();
+            using var context = contextFactory.CreateDbContext();
+
+            var exactMatches = await context.Services.Where(s => s.Title.StartsWith(query)).Include(u => u.Image).ToListAsync();
 
             if (exactMatches.Any())
             {
@@ -64,31 +115,59 @@ namespace OfficeTechRepairSystem.Pages
             else
             {
                 // Поиск похожих результатов
-                var similarMatches = context.Services.Where(s => s.Title.Contains(query)).ToList();
-                
+                var similarMatches = context.Services.Where(s => s.Title.Contains(query)).Include(u => u.Image).ToList();
+
                 Services = similarMatches;
             }
 
-            Categories = await categoryRepository.GetAllAsync();
-        }
+            foreach (var item in Services)
+            {
+                if (item.ImageId is not null)
+                {
+                    await OnGetDownloadFileAsync(item.ImageId);
+                }
+            }
 
-        public async Task<IActionResult> OnPostChangeModeAsync(int categoryId)
-        {
-            IsEditMode = true;
-            // Ваш код для обработки данных
-            return new JsonResult(new { success = true });
+            Categories = await context.Categories.ToListAsync();
         }
 
         public async Task OnPostUpsertService()
         {
-            if (!IsEditMode)
+            using var context = contextFactory.CreateDbContext();
+
+            var file = httpContextAccessor.HttpContext.Request.Form.Files.FirstOrDefault();
+
+            var request = new Image();
+
+            if (file != null)
             {
-                await serviceRepository.AddAsync(Service);
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    request.FileData = memoryStream.ToArray();
+                    request.FileName = file.FileName;
+                    request.FileContentType = file.ContentType;
+                    request.Name = file.Name;
+                }
+
+                try
+                {
+                    await context.Images.AddAsync(request);
+                    await context.SaveChangesAsync();
+
+                    Service.ImageId = await context.Images.OrderBy(item => item.Id).Select(u => u.Id).LastOrDefaultAsync();
+                }
+                catch (Exception ex)
+                {
+                    // Добавление ошибки в ModelState
+                    ModelState.AddModelError(string.Empty, "Произошла ошибка при сохранении запроса: " + ex.Message);
+                }
+
             }
-            else
-            {
-                await serviceRepository.UpdateAsync(Service);
-            }
+
+            await context.Services.AddAsync(Service);
+
+            await context.SaveChangesAsync();       
 
             await OnGetAsync();
         }
