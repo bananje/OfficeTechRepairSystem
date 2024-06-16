@@ -1,6 +1,7 @@
 ﻿@page
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @using Data.Models;
+@using System.IO;
 @using System.Security.Claims
 @inject IWebHostEnvironment webHost;
 @model OfficeTechRepairSystem.Pages.ServicesModel
@@ -56,7 +57,7 @@
                         }
                     </div>
 
-                    @if (@service.ImageId is not null)
+                    @if (@service.ImageId is not null && System.IO.Path.Exists(System.IO.Path.Combine(Model.FilePath, @service.Image.FileName)))
                     {
                         <img src="~/lib/img/@service.Image.FileName" style="height: 300px" class="card-img-top" alt="...">
                     }

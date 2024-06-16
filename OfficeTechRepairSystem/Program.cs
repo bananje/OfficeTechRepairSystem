@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OfficeTechRepairSystem.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,6 +21,8 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
 });
+
+builder.Services.AddSingleton<EmailSender>();
 
 var app = builder.Build();
 

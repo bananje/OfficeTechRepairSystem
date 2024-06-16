@@ -12,6 +12,7 @@ namespace OfficeTechRepairSystem.Pages
          IHttpContextAccessor httpContextAccessor,
          IWebHostEnvironment webHostEnvironment) : PageModel
     {
+        public string FilePath { get; set; }
 
         public bool IsEditMode = false;
 
@@ -30,10 +31,12 @@ namespace OfficeTechRepairSystem.Pages
 
         public async Task OnGetAsync()
         {
+            FilePath = Path.Combine(webHostEnvironment.WebRootPath, "lib/img");
+
             using var context = contextFactory.CreateDbContext();
 
             Categories = await context.Categories.ToListAsync();
-            Services = await context.Services.Include(u => u.Image).ToListAsync();
+            Services = await context.Services.OrderByDescending(u => u.Id).Include(u => u.Image).ToListAsync();
 
             foreach (var item in Services)
             {

@@ -6,7 +6,8 @@ using OfficeTechRepairSystem.Data.Models;
 namespace OfficeTechRepairSystem.Pages
 {
     public class СontactsModel(
-        IDbContextFactory<ApplicationDbContext> contextFactory) : PageModel
+        IDbContextFactory<ApplicationDbContext> contextFactory,
+        EmailSender emailSender) : PageModel
     {
         public Request Request { get; set; }
 
@@ -28,6 +29,10 @@ namespace OfficeTechRepairSystem.Pages
                         await context.Requests.AddAsync(Request);
 
                         await context.SaveChangesAsync();
+
+                        await emailSender.SendUserEmail(Request.Email);
+
+                        await emailSender.SendAdminEmail(Request.Email, Request.Phone, Request.Message, Request.UserName);
                     }
                     catch (Exception ex)
                     {
