@@ -1,3 +1,4 @@
+using ManagementStudent.Api.Utilities.XFileService.XCertainFileService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ namespace OfficeTechRepairSystem.Pages
     public class ServicesModel(
          IDbContextFactory<ApplicationDbContext> contextFactory,
          IHttpContextAccessor httpContextAccessor,
-         IWebHostEnvironment webHostEnvironment) : PageModel
+         SpecializationImageFileService fileService) : PageModel
     {
         public string FilePath { get; set; }
 
@@ -31,46 +32,46 @@ namespace OfficeTechRepairSystem.Pages
 
         public async Task OnGetAsync()
         {
-            FilePath = Path.Combine(webHostEnvironment.WebRootPath, "img");
+            //FilePath = Path.Combine(webHostEnvironment.WebRootPath, "img");
 
             using var context = contextFactory.CreateDbContext();
 
             Categories = await context.Categories.ToListAsync();
             Services = await context.Services.OrderByDescending(u => u.Id).Include(u => u.Image).ToListAsync();
 
-            foreach (var item in Services)
-            {
-                if (item.ImageId is not null)
-                {
-                    await OnGetDownloadFileAsync(item.ImageId);
-                }
-            }
+            //foreach (var item in Services)
+            //{
+            //    if (item.ImageId is not null)
+            //    {
+            //        await OnGetDownloadFileAsync(item.ImageId);
+            //    }
+            //}
         }
 
-        public async Task OnGetDownloadFileAsync(int? requestId)
-        {
-            using var context = contextFactory.CreateDbContext();
-            var request = await context.Images.FindAsync(requestId);
+        //public async Task OnGetDownloadFileAsync(int? requestId)
+        //{
+        //    using var context = contextFactory.CreateDbContext();
+        //    var request = await context.Images.FindAsync(requestId);
 
-            if (request == null || request.FileData == null)
-            {
-                return;
-            }
+        //    if (request == null || request.FileData == null)
+        //    {
+        //        return;
+        //    }
 
-            var uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "img");
+        //    var uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "img");
 
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
+        //    if (!Directory.Exists(uploadsFolder))
+        //    {
+        //        Directory.CreateDirectory(uploadsFolder);
+        //    }
 
-            var filePath = Path.Combine(uploadsFolder, request.FileName);
+        //    var filePath = Path.Combine(uploadsFolder, request.FileName);
 
-            if (!System.IO.File.Exists(filePath))
-            {
-                await System.IO.File.WriteAllBytesAsync(filePath, request.FileData);
-            }
-        }
+        //    if (!System.IO.File.Exists(filePath))
+        //    {
+        //        await System.IO.File.WriteAllBytesAsync(filePath, request.FileData);
+        //    }
+        //}
 
         public async Task OnPostDeleteService(int serviceId)
         {
@@ -94,13 +95,13 @@ namespace OfficeTechRepairSystem.Pages
 
             Services = await context.Services.Where(u => u.CategoryId == categoryId).Include(u => u.Image).ToListAsync();
 
-            foreach (var item in Services)
-            {
-                if (item.ImageId is not null)
-                {
-                    await OnGetDownloadFileAsync(item.ImageId);
-                }
-            }
+            //foreach (var item in Services)
+            //{
+            //    if (item.ImageId is not null)
+            //    {
+            //        await OnGetDownloadFileAsync(item.ImageId);
+            //    }
+            //}
 
             Categories = await context.Categories.ToListAsync(); 
         }
@@ -123,13 +124,13 @@ namespace OfficeTechRepairSystem.Pages
                 Services = similarMatches;
             }
 
-            foreach (var item in Services)
-            {
-                if (item.ImageId is not null)
-                {
-                    await OnGetDownloadFileAsync(item.ImageId);
-                }
-            }
+            //foreach (var item in Services)
+            //{
+            //    if (item.ImageId is not null)
+            //    {
+            //        await OnGetDownloadFileAsync(item.ImageId);
+            //    }
+            //}
 
             Categories = await context.Categories.ToListAsync();
         }
@@ -144,14 +145,9 @@ namespace OfficeTechRepairSystem.Pages
 
             if (file != null)
             {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await file.CopyToAsync(memoryStream);
-                    request.FileData = memoryStream.ToArray();
-                    request.FileName = file.FileName;
-                    request.FileContentType = file.ContentType;
-                    request.Name = file.Name;
-                }
+                var savedFile = await fileService.Upload(file);
+
+                request.FilePath = savedFile.FilePath;
 
                 try
                 {

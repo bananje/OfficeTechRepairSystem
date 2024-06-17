@@ -123,6 +123,41 @@ public class EmailSender
         }
     }
 
+    public async Task SendChangeEmailAsync(string email, string html)
+    {
+        MailMessage message = new MailMessage();
+
+        // Установите тему сообщения, тело HTML, информацию об отправителе и получателе.
+        message.Subject = "ООО 'Ремонтер' уведомление о принятии заявки";
+        message.HtmlBody = html;
+
+        message.From = new MailAddress("bananjekrd@gmail.com", "OOO Remonter", false);
+        message.To.Add(new MailAddress(email, "OOO Remonter", false));
+
+        // Укажите кодировку 
+        message.BodyEncoding = Encoding.ASCII;
+
+        // Создайте экземпляр класса SmtpClient.
+        SmtpClient client = new SmtpClient();
+
+        // Укажите свой почтовый хост, имя пользователя, пароль, номер порта и параметр безопасности.
+        client.Host = "smtp.gmail.com";
+        client.Username = "bananjekrd@gmail.com";
+        client.Password = "njlc jlfo bkbb qovl";
+        client.Port = 587;
+        client.SecurityOptions = SecurityOptions.SSLExplicit;
+
+        try
+        {
+            // Отправить это письмо
+            await client.SendAsync(message);
+        }
+        catch (Exception ex)
+        {
+            Trace.WriteLine(ex.ToString());
+        }
+    }
+
     public async Task SendUserEmail(string userMail)
     {
         MailMessage message = new MailMessage();

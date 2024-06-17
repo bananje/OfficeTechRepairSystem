@@ -1,3 +1,4 @@
+using ManagementStudent.Api.Utilities.XFileService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OfficeTechRepairSystem.Data;
@@ -16,6 +17,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages();
+
+builder.Services.AddFileService();
 
 builder.Services.AddAuthorization(options =>
 {

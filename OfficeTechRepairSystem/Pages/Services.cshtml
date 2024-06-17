@@ -3,7 +3,6 @@
 @using Data.Models;
 @using System.IO;
 @using System.Security.Claims
-@inject IWebHostEnvironment webHost;
 @model OfficeTechRepairSystem.Pages.ServicesModel
 @{
     string modalTitle = !Model.IsEditMode ? "Создать новую услугу" : "Редактировать услугу";
@@ -57,9 +56,9 @@
                         }
                     </div>
 
-                    @if (@service.ImageId is not null && System.IO.Path.Exists(System.IO.Path.Combine(Model.FilePath, @service.Image.FileName)))
+                    @if (@service.ImageId is not null)
                     {
-                        <img src="~/img/@service.Image.FileName" style="height: 300px" class="card-img-top" alt="...">
+                        @* <img src="~/img/@service.Image.FileName" style="height: 300px" class="card-img-top" alt="..."> *@
                     }
                     else
                     {
