@@ -2,6 +2,7 @@ version: '3.8'
 
 volumes:
   postgres_data:
+  img:
 
 networks:
   app-network:
@@ -16,9 +17,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - img:/app/wwwroot/img
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__OfficeTechRepairSystemDb=Username=postgres;Password=postgres;Host=db;Port=5432;Database=OfficeTechRepairSystemDb;Pooling=true
+      - ConnectionStrings__OfficeTechRepairSystemDb=Username=postgres;Password=postgres;Host=pidor;Port=5432;Database=OfficeTechRepairSystemDb;Pooling=true
     networks:
       - app-network
 
@@ -26,6 +29,7 @@ services:
     image: postgres:16.1-alpine
     ports:
       - "5433:5432"
+    container_name: pidor
     environment:
       POSTGRES_DB: OfficeTechRepairSystemDb
       POSTGRES_USER: postgres

@@ -59,7 +59,7 @@
 
                     @if (@service.ImageId is not null && System.IO.Path.Exists(System.IO.Path.Combine(Model.FilePath, @service.Image.FileName)))
                     {
-                        <img src="~/lib/img/@service.Image.FileName" style="height: 300px" class="card-img-top" alt="...">
+                        <img src="~/img/@service.Image.FileName" style="height: 300px" class="card-img-top" alt="...">
                     }
                     else
                     {

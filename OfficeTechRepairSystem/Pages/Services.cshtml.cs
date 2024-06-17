@@ -31,7 +31,7 @@ namespace OfficeTechRepairSystem.Pages
 
         public async Task OnGetAsync()
         {
-            FilePath = Path.Combine(webHostEnvironment.WebRootPath, "lib/img");
+            FilePath = Path.Combine(webHostEnvironment.WebRootPath, "img");
 
             using var context = contextFactory.CreateDbContext();
 
@@ -57,7 +57,7 @@ namespace OfficeTechRepairSystem.Pages
                 return;
             }
 
-            var uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "lib/img");
+            var uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "img");
 
             if (!Directory.Exists(uploadsFolder))
             {
