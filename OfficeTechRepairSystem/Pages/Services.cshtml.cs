@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using OfficeTechRepairSystem.Data;
 using OfficeTechRepairSystem.Data.Models;
-using System.Security.Claims;
 
 namespace OfficeTechRepairSystem.Pages
 {
@@ -32,48 +31,15 @@ namespace OfficeTechRepairSystem.Pages
 
         public async Task OnGetAsync()
         {
-            //FilePath = Path.Combine(webHostEnvironment.WebRootPath, "img");
-
             using var context = contextFactory.CreateDbContext();
 
             Categories = await context.Categories.ToListAsync();
             Services = await context.Services.OrderByDescending(u => u.Id).Include(u => u.Image).ToListAsync();
 
-            //foreach (var item in Services)
-            //{
-            //    if (item.ImageId is not null)
-            //    {
-            //        await OnGetDownloadFileAsync(item.ImageId);
-            //    }
-            //}
+            Service = new Service();
         }
-
-        //public async Task OnGetDownloadFileAsync(int? requestId)
-        //{
-        //    using var context = contextFactory.CreateDbContext();
-        //    var request = await context.Images.FindAsync(requestId);
-
-        //    if (request == null || request.FileData == null)
-        //    {
-        //        return;
-        //    }
-
-        //    var uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "img");
-
-        //    if (!Directory.Exists(uploadsFolder))
-        //    {
-        //        Directory.CreateDirectory(uploadsFolder);
-        //    }
-
-        //    var filePath = Path.Combine(uploadsFolder, request.FileName);
-
-        //    if (!System.IO.File.Exists(filePath))
-        //    {
-        //        await System.IO.File.WriteAllBytesAsync(filePath, request.FileData);
-        //    }
-        //}
-
-        public async Task OnPostDeleteService(int serviceId)
+      
+        public async Task<IActionResult> OnPostDeleteService(int serviceId)
         {
             using var context = contextFactory.CreateDbContext();
 
@@ -86,7 +52,7 @@ namespace OfficeTechRepairSystem.Pages
                 await context.SaveChangesAsync();
             }
 
-            await OnGetAsync();
+            return RedirectToAction(nameof(OnGetAsync));
         }
 
         public async Task OnPostGetServicesByCategory(int categoryId)
@@ -94,14 +60,6 @@ namespace OfficeTechRepairSystem.Pages
             using var context = contextFactory.CreateDbContext();
 
             Services = await context.Services.Where(u => u.CategoryId == categoryId).Include(u => u.Image).ToListAsync();
-
-            //foreach (var item in Services)
-            //{
-            //    if (item.ImageId is not null)
-            //    {
-            //        await OnGetDownloadFileAsync(item.ImageId);
-            //    }
-            //}
 
             Categories = await context.Categories.ToListAsync(); 
         }
@@ -124,18 +82,10 @@ namespace OfficeTechRepairSystem.Pages
                 Services = similarMatches;
             }
 
-            //foreach (var item in Services)
-            //{
-            //    if (item.ImageId is not null)
-            //    {
-            //        await OnGetDownloadFileAsync(item.ImageId);
-            //    }
-            //}
-
             Categories = await context.Categories.ToListAsync();
         }
 
-        public async Task OnPostUpsertService()
+        public async Task<IActionResult> OnPostUpsertService()
         {
             using var context = contextFactory.CreateDbContext();
 
@@ -166,9 +116,9 @@ namespace OfficeTechRepairSystem.Pages
 
             await context.Services.AddAsync(Service);
 
-            await context.SaveChangesAsync();       
+            await context.SaveChangesAsync();
 
-            await OnGetAsync();
+            return RedirectToAction(nameof(OnGetAsync));
         }
     }
 }
