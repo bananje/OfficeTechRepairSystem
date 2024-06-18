@@ -6,7 +6,7 @@
 @inject IWebHostEnvironment webpath;
 @model OfficeTechRepairSystem.Pages.ServicesModel
 @{
-    string modalTitle = !Model.IsEditMode ? "Создать новую услугу" : "Редактировать услугу";
+    string filepath = "";
 }
 
 <div class="service-header">
@@ -14,7 +14,17 @@
 
         <div class="row">
             <div class="col d-flex">
-                <h5 class="pt-5 fw-bold">Услуги</h5>
+                
+                <div class="dropdown">
+                    <button class="dropbtn">Dropdown</button>
+                    <div class="dropdown-content">
+                        <a href="#">Link 1</a>
+                        <a href="#">Link 2</a>
+                        <a href="#">Link 3</a>
+                    </div>
+                </div>
+
+                <h5 class="pt-4 fw-bold">Услуги</h5>
                 @if (User.Identity.IsAuthenticated && User.HasClaim(claim => claim.Type == ClaimTypes.Name && claim.Value == "admin@example.com"))
                 {
                     <i class="fa-solid m-3 pt-5 fa-plus fa-xl" style="color: #000000;" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
@@ -36,11 +46,10 @@
             @foreach (Category category in Model.Categories)
             {
                 <form method="post" asp-page-handler="GetServicesByCategory">
-                    <button type="submit" class="category" onclick="setActive(this)">
+                    <button type="submit" class="category" onclick="setActive(event, this)">
                         <p>@category.Title</p>
                     </button>
-
-                    <input hidden asp-for="@Model.CategoryId" value="@category.Id"/>
+                    <input hidden asp-for="@Model.CategoryId" value="@category.Id" />
                 </form>
             }
         </div>
@@ -49,6 +58,8 @@
 
             @foreach(Service service in Model.Services)
             {
+                string filePath = "";
+
                 <div class="card mb-3">
                     <div class="card-crud">
                         @if (User.Identity.IsAuthenticated && User.HasClaim(claim => claim.Type == ClaimTypes.Name && claim.Value == "admin@example.com"))
@@ -60,16 +71,28 @@
                     @if (@service.ImageId is not null)
                     {
                         <img src="~/@service.Image.FilePath" style="height: 300px" class="card-img-top" alt="...">
+                        filePath = "~/" + @service.Image.FilePath;
                     }
                     else
                     {
                         <img src="~/lib/img/non-picture.png" style="height: 300px" class="card-img-top" alt="...">
+                        filePath = "~/lib/img/non-picture.png";
                     }
 
                     <div class="card-body">
                         <h5 class="card-title">@service.Title</h5>
                         <p class="card-text">@service.ShortDesc</p>
-                        <p class="card-text"><small class="text-muted">@service.Price руб</small></p>
+
+                        <div class="d-flex">
+                            <p class="card-text"><small class="text-muted">@service.Price руб</small></p>
+
+                            <button type="button" class="btn btn-dark ms-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
+                                data-title="@service.Title" 
+                                data-shortdesc="@service.ShortDesc"
+                                data-desc="@service.Description"
+                                data-price="@service.Price"
+                                data-image="@filePath">Подробнее</button>
+                        </div>
                     </div>
                 </div>
             }
@@ -83,7 +106,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">@modalTitle</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Добавить новую услугу</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -164,31 +187,71 @@
     </div>
 </div>
 
+@* Модальное окно для просмотра услуги *@
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                
+                <div class="card">
+
+                    <img src="~/lib/img/non-picture.png" style="height: 300px" class="card-img-top service-img" alt="..."> 
+
+                    <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <p class="card-text desc"></p>
+
+                        <div class="d-flex">
+                            <p class="card-text price"><small class="text-muted"></small></p>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts{
 
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        function setActive(element) {                
+        function setActive(event, element) {
+            // Проверка, существует ли объект event
+            if (event) {
+                // Предотвращаем перезагрузку страницы, если это не форма
+                event.preventDefault();
+            }
+
+            // Убираем класс 'active' со всех элементов
             var categories = document.getElementsByClassName('category');
             for (var i = 0; i < categories.length; i++) {
                 categories[i].classList.remove('active');
             }
+
+            // Добавляем класс 'active' к выбранному элементу
             element.classList.add('active');
         }
 
     </script>
 
     <script>
-        // Добавление обработчика события для показа модального окна
         var exampleModal = document.getElementById('exampleModal1');
         exampleModal.addEventListener('show.bs.modal', function (event) {
-            // Кнопка, которая вызвала модальное окно
+
             var button = event.relatedTarget;
-            // Извлечение информации из атрибутов data-*
             var id = button.getAttribute('data-id');
 
-            // Обновление содержимого модального окна
             var modalTitle = exampleModal.querySelector('.modal-title');
             var modalBodyContent = exampleModal.querySelector('#modal-body-content');
             var modalInput = exampleModal.querySelector('.input-id');
@@ -199,34 +262,31 @@
         });
     </script>
 
-    @* <script>
+    <script>
         // Добавление обработчика события для показа модального окна
-        var exampleModalEx = document.getElementById('exampleModal');
-        exampleModalEx.addEventListener('show.bs.modal', function (event) {
+        var Modal = document.getElementById('staticBackdrop');
+         Modal.addEventListener('show.bs.modal', function (event) {
             // Кнопка, которая вызвала модальное окно
             var button = event.relatedTarget;
             // Извлечение информации из атрибутов data-*
-            var id = button.getAttribute('data-id');
             var title = button.getAttribute('data-title');
-            var desc = button.getAttribute('data-desc');
             var shortDesc = button.getAttribute('data-shortdesc');
-            var price = button.getAttribute('data-price');
-            var category = button.getAttribute('data-category');
+            var Desc = button.getAttribute('data-desc');
+            var Price = button.getAttribute('data-price');
+            var filepath = button.getAttribute('data-image');
 
             // Обновление содержимого модального окна
-            var Id = exampleModalEx.querySelector('.input-id');
-            var Title = exampleModalEx.querySelector('.input-title');
-            var ShortDesc = exampleModalEx.querySelector('.input-ShortDesc');
-            var Desc = exampleModalEx.querySelector('.input-Desc');
-            var Price = exampleModalEx.querySelector('.input-Price');
-            var Category = exampleModalEx.querySelector('.select-cat);
+            var modalTitle = Modal.querySelector('.modal-title');
+            var shortdesc = Modal.querySelector('.card-title');
+            var desc = Modal.querySelector('.desc');
+            var price = Modal.querySelector('.price');
+            var image = Modal.querySelector('.service-img');
 
-            Id.value = id;
-            Title.value = title;
-            Desc.value = desc;
-            Price.value = price;
-            Category.value = category;
-            ShortDesc.value = shortDesc;
+            modalTitle.textContent = title;
+            shortdesc.textContent = shortDesc;
+            desc.textContent = Desc;
+            price.textContent = Price;
+            image.src = filepath;
         });
-    </script> *@
+    </script> 
 }
