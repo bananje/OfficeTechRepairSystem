@@ -12,7 +12,9 @@ namespace OfficeTechRepairSystem.Pages
          IHttpContextAccessor httpContextAccessor,
          SpecializationImageFileService fileService) : PageModel
     {
+        [BindProperty]
         public string FilePath { get; set; }
+
 
         public bool IsEditMode = false;
 

@@ -16,6 +16,9 @@
 </head>
 <body>
     <header>
+
+        @* Шапка сайта *@
+
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">Ремонтер</a>
@@ -41,11 +44,17 @@
         </nav>
     </header>
     <div>
-        <main role="main" class="mb-5">                     
-            @RenderBody()
+
+       @*  Генерация страници для отображение *@
+
+        <main role="main" class="mb-5 pb-5">
+            
+            @* метод генерации *@
+            @RenderBody() 
         </main>
     </div>
 
+    @* Подвал сайта *@
     <footer class="border-top footer text-muted mt-5">
         <div class="container">
             &copy; 2024 - Ремонтер - <a>Права защищены</a>
@@ -55,6 +64,8 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @* Подключение всех JS скриптов *@
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

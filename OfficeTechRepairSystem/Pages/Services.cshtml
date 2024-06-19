@@ -9,25 +9,27 @@
     string filepath = "";
 }
 
+@* Панель с поиском и фильтрацией по категориям *@
 <div class="service-header">
     <div class="container">
 
         <div class="row">
-            <div class="col d-flex">
+            <div class="col pt-5 d-flex">
                 
                 <div class="dropdown">
-                    <button class="dropbtn">Dropdown</button>
-                    <div class="dropdown-content">
-                        <a href="#">Link 1</a>
-                        <a href="#">Link 2</a>
-                        <a href="#">Link 3</a>
-                    </div>
+                    <button class="dropbtn">Категория</button>
+                    <form method="post" asp-page-handler="GetServicesByCategory" class="dropdown-content">
+                        @foreach (Category category in Model.Categories)
+                        {
+                            <button href="#">@category.Title</button>
+                            <input hidden asp-for="@Model.CategoryId" value="@category.Id" />
+                        }
+                    </form>
                 </div>
 
-                <h5 class="pt-4 fw-bold">Услуги</h5>
                 @if (User.Identity.IsAuthenticated && User.HasClaim(claim => claim.Type == ClaimTypes.Name && claim.Value == "admin@example.com"))
                 {
-                    <i class="fa-solid m-3 pt-5 fa-plus fa-xl" style="color: #000000;" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
+                    <i class="fa-solid m-3 fa-plus fa-xl" style="color: #000000;" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
                 }
             </div>
 
@@ -39,26 +41,14 @@
     </div>
 </div>
 
+@* Отрисовка услуг *@
 <div class="container mt-5">
 
     <div class="row">
-        <div class="col-3" style="margin-right:130px">
-            @foreach (Category category in Model.Categories)
-            {
-                <form method="post" asp-page-handler="GetServicesByCategory">
-                    <button type="submit" class="category" onclick="setActive(event, this)">
-                        <p>@category.Title</p>
-                    </button>
-                    <input hidden asp-for="@Model.CategoryId" value="@category.Id" />
-                </form>
-            }
-        </div>
 
-        <div class="col">
-
-            @foreach(Service service in Model.Services)
-            {
-                string filePath = "";
+        @foreach(Service service in Model.Services)
+        {
+        <div class="col-6">
 
                 <div class="card mb-3">
                     <div class="card-crud">
@@ -71,12 +61,10 @@
                     @if (@service.ImageId is not null)
                     {
                         <img src="~/@service.Image.FilePath" style="height: 300px" class="card-img-top" alt="...">
-                        filePath = "~/" + @service.Image.FilePath;
                     }
                     else
                     {
                         <img src="~/lib/img/non-picture.png" style="height: 300px" class="card-img-top" alt="...">
-                        filePath = "~/lib/img/non-picture.png";
                     }
 
                     <div class="card-body">
@@ -85,18 +73,33 @@
 
                         <div class="d-flex">
                             <p class="card-text"><small class="text-muted">@service.Price руб</small></p>
-
-                            <button type="button" class="btn btn-dark ms-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
-                                data-title="@service.Title" 
-                                data-shortdesc="@service.ShortDesc"
-                                data-desc="@service.Description"
-                                data-price="@service.Price"
-                                data-image="@filePath">Подробнее</button>
+                            @if (@service.ImageId is not null)
+                            {
+                                <button type="button" class="btn btn-dark ms-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                        data-title="@service.Title"
+                                        data-shortdesc="@service.ShortDesc"
+                                        data-desc="@service.Description"
+                                        data-price="@service.Price"
+                                        data-image="@service.Image.FilePath">
+                                    Подробнее
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-dark ms-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                        data-title="@service.Title"
+                                        data-shortdesc="@service.ShortDesc"
+                                        data-desc="@service.Description"
+                                        data-price="@service.Price"
+                                        data-image="">
+                                    Подробнее
+                                </button>
+                            }
                         </div>
                     </div>
-                </div>
-            }
+                </div>           
         </div> 
+        }
     </div>
 </div>
 
@@ -199,7 +202,7 @@
                 
                 <div class="card">
 
-                    <img src="~/lib/img/non-picture.png" style="height: 300px" class="card-img-top service-img" alt="..."> 
+                    <img style="height: 300px" class="card-img-top service-img" alt="...">
 
                     <div class="card-body">
                         <h5 class="card-title"></h5>
@@ -224,26 +227,6 @@
 @section Scripts{
 
     <partial name="_ValidationScriptsPartial" />
-
-    <script>
-        function setActive(event, element) {
-            // Проверка, существует ли объект event
-            if (event) {
-                // Предотвращаем перезагрузку страницы, если это не форма
-                event.preventDefault();
-            }
-
-            // Убираем класс 'active' со всех элементов
-            var categories = document.getElementsByClassName('category');
-            for (var i = 0; i < categories.length; i++) {
-                categories[i].classList.remove('active');
-            }
-
-            // Добавляем класс 'active' к выбранному элементу
-            element.classList.add('active');
-        }
-
-    </script>
 
     <script>
         var exampleModal = document.getElementById('exampleModal1');
@@ -286,7 +269,13 @@
             shortdesc.textContent = shortDesc;
             desc.textContent = Desc;
             price.textContent = Price;
-            image.src = filepath;
+
+            if (filepath != ""){
+                image.src = filepath;
+            }
+            else{
+                image.src = "../lib/img/non-picture.png"
+            }
         });
     </script> 
 }

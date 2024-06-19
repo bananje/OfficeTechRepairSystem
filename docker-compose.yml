@@ -8,7 +8,7 @@ networks:
   app-network:
 
 services:
-  app:
+  officetechrepairsystem:
     build:
       context: .
       dockerfile: OfficeTechRepairSystem/Dockerfile
@@ -18,7 +18,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - img:/app/wwwroot/static/SpecializationImageStorage
+      - ./wwwroot/static/SpecializationImageStorage:/app/wwwroot/static/SpecializationImageStorage
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__OfficeTechRepairSystemDb=Username=postgres;Password=postgres;Host=postgre;Port=5432;Database=OfficeTechRepairSystemDb;Pooling=true
