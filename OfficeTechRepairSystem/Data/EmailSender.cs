@@ -97,7 +97,7 @@ public class EmailSender
         message1.From = new MailAddress("bananjekrd@gmail.com", "OOO Remonter", false);
 
         // TO-DO указать почту актуальную
-        message1.To.Add(new MailAddress("vgerman2004@mail.ru", "OOO Remonter", false));
+        message1.To.Add(new MailAddress("faustkill@bk.ru", "OOO Remonter", false));
 
         // Укажите кодировку 
         message1.BodyEncoding = Encoding.ASCII;

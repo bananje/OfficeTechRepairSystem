@@ -37,16 +37,16 @@ namespace OfficeTechRepairSystem.Pages
                     }
                     catch (Exception ex)
                     {
-                        //ModelState.AddModelError(string.Empty, "Произошла ошибка при сохранении запроса: " + ex.Message);
+                        ModelState.AddModelError(string.Empty, "Произошла ошибка при сохранении запроса: " + ex.Message);
                     }
                 }
+
+                return RedirectToAction(nameof(OnGet));
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Запрос не может быть пустым.");
+                return Page();
             }
-
-            return RedirectToAction(nameof(OnGet));
         }
     }
 }
