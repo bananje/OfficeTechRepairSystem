@@ -16,6 +16,7 @@
         <div class="row">
             <div class="col pt-5 d-flex">
                 
+               @*  Фильтрация по категориям *@
                 <div class="dropdown">
                     <button class="dropbtn">Категория</button>
                     <form method="post" asp-page-handler="GetServicesByCategory" class="dropdown-content">
@@ -27,12 +28,14 @@
                     </form>
                 </div>
 
+               @*  Если юзер админ, то появляется крест *@
                 @if (User.Identity.IsAuthenticated && User.HasClaim(claim => claim.Type == ClaimTypes.Name && claim.Value == "admin@example.com"))
                 {
                     <i class="fa-solid m-3 fa-plus fa-xl" style="color: #000000;" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
                 }
             </div>
 
+           @*  Форма для поиска *@
             <form method="post" asp-page-handler="GetServicesBySearch" class="input-group col pt-5" style="height: 30px">
                 <input asp-for="@Model.Query" class="form-control" placeholder="Введите название услуги" aria-label="Recipient's username" aria-describedby="button-addon2">
                 <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Поиск</button>
