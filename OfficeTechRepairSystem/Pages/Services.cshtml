@@ -19,13 +19,15 @@
                @*  Фильтрация по категориям *@
                 <div class="dropdown">
                     <button class="dropbtn">Категория</button>
-                    <form method="post" asp-page-handler="GetServicesByCategory" class="dropdown-content">
+                    <div class="dropdown-content">
                         @foreach (Category category in Model.Categories)
                         {
-                            <button href="#">@category.Title</button>
-                            <input hidden asp-for="@Model.CategoryId" value="@category.Id" />
+                            <form method="post" asp-page-handler="GetServicesByCategory">
+                                <button type="submit" href="#">@category.Title</button>
+                                <input hidden asp-for="@Model.CategoryId" value="@category.Id" />
+                            </form>
                         }
-                    </form>
+                    </div>
                 </div>
 
                @*  Если юзер админ, то появляется крест *@

@@ -18,6 +18,7 @@ namespace OfficeTechRepairSystem.Pages
 
         public bool IsEditMode = false;
 
+        [BindProperty]
         public int CategoryId { get; set; }
 
         public string Query { get; set; }
@@ -57,11 +58,11 @@ namespace OfficeTechRepairSystem.Pages
             return RedirectToAction(nameof(OnGetAsync));
         }
 
-        public async Task OnPostGetServicesByCategory(int categoryId)
+        public async Task OnPostGetServicesByCategory()
         {
             using var context = contextFactory.CreateDbContext();
 
-            Services = await context.Services.Where(u => u.CategoryId == categoryId).Include(u => u.Image).ToListAsync();
+            Services = await context.Services.Where(u => u.CategoryId == CategoryId).Include(u => u.Image).ToListAsync();
 
             Categories = await context.Categories.ToListAsync(); 
         }
